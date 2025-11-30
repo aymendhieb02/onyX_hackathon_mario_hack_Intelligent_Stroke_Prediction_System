@@ -79,24 +79,37 @@ def load_models():
     probability_model = None
     
     try:
-        with open('stroke_binary_model.pkl', 'rb') as f:
-            binary_model = pickle.load(f)
-    except FileNotFoundError:
-        st.warning("⚠️ Binary model not found. Using rule-based prediction.")
+        if os.path.exists('stroke_binary_model.pkl'):
+            with open('stroke_binary_model.pkl', 'rb') as f:
+                binary_model = pickle.load(f)
+        else:
+            print("⚠️ Binary model file not found")
     except Exception as e:
-        st.error(f"Error loading binary model: {e}")
+        print(f"Error loading binary model: {e}")
+        binary_model = None
     
     try:
-        with open('stroke_probability_model.pkl', 'rb') as f:
-            probability_model = pickle.load(f)
-    except FileNotFoundError:
-        st.warning("⚠️ Probability model not found. Using rule-based prediction.")
+        if os.path.exists('stroke_probability_model.pkl'):
+            with open('stroke_probability_model.pkl', 'rb') as f:
+                probability_model = pickle.load(f)
+        else:
+            print("⚠️ Probability model file not found")
     except Exception as e:
-        st.error(f"Error loading probability model: {e}")
+        print(f"Error loading probability model: {e}")
+        probability_model = None
     
     return binary_model, probability_model
 
-binary_model, probability_model = load_models()
+# Load models with error handling
+try:
+    with st.spinner("Loading AI models..."):
+        binary_model, probability_model = load_models()
+        if binary_model is None or probability_model is None:
+            st.info("ℹ️ Models not loaded. App will use rule-based prediction.")
+except Exception as e:
+    st.error(f"Error initializing models: {e}")
+    binary_model = None
+    probability_model = None
 
 # =============================================================================
 # HELPER FUNCTIONS
@@ -178,7 +191,7 @@ def calculate_risk_score(patient_data):
 
 def predict_stroke_risk(patient_data):
     """Predict stroke risk using ML models"""
-    # Get rule-based risk factors
+    # Get rule-based risk factors (always available)
     rule_percentage, rule_level, risk_factors = calculate_risk_score(patient_data)
     
     # If models not loaded, use rule-based
@@ -189,29 +202,45 @@ def predict_stroke_risk(patient_data):
         input_df = prepare_input_dataframe(patient_data)
         
         # Get binary prediction
-        binary_prediction = int(binary_model.predict(input_df)[0])
+        binary_prediction = None
+        try:
+            binary_prediction = int(binary_model.predict(input_df)[0])
+        except Exception as e:
+            print(f"Binary prediction error: {e}")
         
         # Get probability prediction
-        risk_probability = probability_model.predict(input_df)[0]
-        risk_percentage = int(risk_probability * 100)
-        risk_percentage = max(0, min(100, risk_percentage))
+        risk_probability = None
+        try:
+            risk_probability = probability_model.predict(input_df)[0]
+        except Exception as e:
+            print(f"Probability prediction error: {e}")
         
-        # If binary prediction is 1, ensure minimum risk
-        if binary_prediction == 1:
-            risk_percentage = max(risk_percentage, 30)
-        
-        # Determine risk level
-        if risk_percentage >= 60:
-            risk_level = "HIGH"
-        elif risk_percentage >= 30:
-            risk_level = "MODERATE"
+        # Use ML prediction if available, otherwise fallback to rule-based
+        if risk_probability is not None:
+            risk_percentage = int(risk_probability * 100)
+            risk_percentage = max(0, min(100, risk_percentage))
+            
+            # If binary prediction is 1, ensure minimum risk
+            if binary_prediction == 1:
+                risk_percentage = max(risk_percentage, 30)
+            
+            # Determine risk level
+            if risk_percentage >= 60:
+                risk_level = "HIGH"
+            elif risk_percentage >= 30:
+                risk_level = "MODERATE"
+            else:
+                risk_level = "LOW"
         else:
-            risk_level = "LOW"
+            # Fallback to rule-based
+            risk_percentage = rule_percentage
+            risk_level = rule_level
         
         return risk_percentage, risk_level, risk_factors, binary_prediction
         
     except Exception as e:
-        st.error(f"Prediction error: {e}")
+        print(f"Prediction error: {e}")
+        # Always return rule-based as fallback
         return rule_percentage, rule_level, risk_factors, None
 
 # =============================================================================
