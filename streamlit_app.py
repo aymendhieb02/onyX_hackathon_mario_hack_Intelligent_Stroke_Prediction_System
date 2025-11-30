@@ -10,6 +10,9 @@ import pickle
 import os
 from datetime import datetime
 
+# Import model wrapper classes (required for loading pickled models)
+from model_wrappers import StrokeBinaryPredictor, StrokeProbabilityPredictor
+
 # Page configuration
 st.set_page_config(
     page_title="StrokeCare AI - Risk Assessment",

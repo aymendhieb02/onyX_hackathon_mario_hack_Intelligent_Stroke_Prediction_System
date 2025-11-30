@@ -12,6 +12,9 @@ import requests
 import json
 from datetime import datetime
 
+# Import model wrapper classes (required for loading pickled models)
+from model_wrappers import StrokeBinaryPredictor, StrokeProbabilityPredictor
+
 app = Flask(__name__)
 
 # =============================================================================
