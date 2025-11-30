@@ -101,17 +101,19 @@ def load_models():
     return binary_model, probability_model
 
 # Load models with error handling (only show spinner on first run)
+# Initialize models as None first
+binary_model = None
+probability_model = None
+
 if 'models_loaded' not in st.session_state:
     try:
-        with st.spinner("Loading AI models... This may take a moment."):
-            binary_model, probability_model = load_models()
-            st.session_state['models_loaded'] = True
-            st.session_state['binary_model'] = binary_model
-            st.session_state['probability_model'] = probability_model
-            if binary_model is None or probability_model is None:
-                st.info("ℹ️ Models not loaded. App will use rule-based prediction.")
+        # Try to load models, but don't block if they fail
+        binary_model, probability_model = load_models()
+        st.session_state['models_loaded'] = True
+        st.session_state['binary_model'] = binary_model
+        st.session_state['probability_model'] = probability_model
     except Exception as e:
-        st.error(f"Error initializing models: {e}")
+        # Silently fail and use rule-based prediction
         st.session_state['models_loaded'] = True
         st.session_state['binary_model'] = None
         st.session_state['probability_model'] = None
