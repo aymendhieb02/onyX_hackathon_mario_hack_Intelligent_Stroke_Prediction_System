@@ -10,8 +10,8 @@ import pickle
 import os
 from datetime import datetime
 
-# Import model wrapper classes (required for loading pickled models)
-from model_wrappers import StrokeBinaryPredictor, StrokeProbabilityPredictor
+# Import model wrapper classes and preprocessing function (required for loading pickled models)
+from model_wrappers import StrokeBinaryPredictor, StrokeProbabilityPredictor, complete_preprocessing
 
 # Page configuration
 st.set_page_config(
