@@ -100,16 +100,27 @@ def load_models():
     
     return binary_model, probability_model
 
-# Load models with error handling
-try:
-    with st.spinner("Loading AI models..."):
-        binary_model, probability_model = load_models()
-        if binary_model is None or probability_model is None:
-            st.info("ℹ️ Models not loaded. App will use rule-based prediction.")
-except Exception as e:
-    st.error(f"Error initializing models: {e}")
-    binary_model = None
-    probability_model = None
+# Load models with error handling (only show spinner on first run)
+if 'models_loaded' not in st.session_state:
+    try:
+        with st.spinner("Loading AI models... This may take a moment."):
+            binary_model, probability_model = load_models()
+            st.session_state['models_loaded'] = True
+            st.session_state['binary_model'] = binary_model
+            st.session_state['probability_model'] = probability_model
+            if binary_model is None or probability_model is None:
+                st.info("ℹ️ Models not loaded. App will use rule-based prediction.")
+    except Exception as e:
+        st.error(f"Error initializing models: {e}")
+        st.session_state['models_loaded'] = True
+        st.session_state['binary_model'] = None
+        st.session_state['probability_model'] = None
+        binary_model = None
+        probability_model = None
+else:
+    # Use cached models from session state
+    binary_model = st.session_state.get('binary_model')
+    probability_model = st.session_state.get('probability_model')
 
 # =============================================================================
 # HELPER FUNCTIONS
@@ -323,9 +334,14 @@ if predict_button:
         'smoking_status': smoking_status
     }
     
-    # Show loading
-    with st.spinner("🔍 Analyzing your health data..."):
-        risk_percentage, risk_level, risk_factors, binary_prediction = predict_stroke_risk(patient_data)
+    # Show loading with error handling
+    try:
+        with st.spinner("🔍 Analyzing your health data..."):
+            risk_percentage, risk_level, risk_factors, binary_prediction = predict_stroke_risk(patient_data)
+    except Exception as e:
+        st.error(f"An error occurred during prediction: {e}")
+        st.info("Please try again or contact support if the issue persists.")
+        st.stop()
     
     # Display results
     st.markdown("---")
