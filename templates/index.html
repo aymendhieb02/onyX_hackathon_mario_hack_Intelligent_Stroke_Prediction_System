@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StrokeCare AI - Intelligent Risk Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background-animation">
+        <div class="pulse-circle"></div>
+        <div class="pulse-circle delay-1"></div>
+        <div class="pulse-circle delay-2"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+                </svg>
+            </div>
+            <span class="logo-text">StrokeCare<span class="ai-badge">AI</span></span>
+        </div>
+        <p class="tagline">Intelligent Risk Assessment • Compassionate Care</p>
+        <div style="margin-top: 1rem;">
+            <a href="/deploy" class="btn btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem;">
+                🚀 Deploy to Streamlit
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Welcome Section -->
+        <section class="welcome-section" id="welcome">
+            <div class="welcome-content">
+                <h1>Your Health Journey Starts Here</h1>
+                <p>Our AI-powered assessment helps identify stroke risk factors with care and precision. 
+                   Complete the form below for your personalized health insights.</p>
+                <div class="trust-badges">
+                    <div class="badge">
+                        <span class="badge-icon">🔒</span>
+                        <span>Private & Secure</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">🤖</span>
+                        <span>AI-Powered</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">❤️</span>
+                        <span>Human-Centered</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Assessment Form -->
+        <section class="form-section" id="formSection">
+            <form id="assessmentForm" class="assessment-form">
+                <!-- Progress Indicator -->
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="step active" data-step="1">Personal</div>
+                        <div class="step" data-step="2">Medical</div>
+                        <div class="step" data-step="3">Lifestyle</div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Personal Information -->
+                <div class="form-step active" id="step1">
+                    <div class="step-header">
+                        <h2>👤 Personal Information</h2>
+                        <p>Let's start with some basic information about you</p>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="age">
+                                <span class="label-icon">🎂</span>
+                                Age
+                            </label>
+                            <input type="number" id="age" name="age" min="1" max="120" 
+                                   placeholder="Enter your age" required>
+                            <span class="input-hint">Your age is an important factor in risk assessment</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">
+                                <span class="label-icon">⚧</span>
+                                Gender
+                            </label>
+                            <div class="radio-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="gender" value="Male" required>
+                                    <span class="radio-content">
+                                        <span class="radio-icon">👨</span>
+                                        <span>Male</span>
+                                    </span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="gender" value="Female">
+                                    <span class="radio-content">
+                                        <span class="radio-icon">👩</span>
+                                        <span>Female</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="residence">
+                                <span class="label-icon">🏠</span>
+                                Residence Type
+                            </label>
+                            <div class="radio-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="residence" value="Urban" required>
+                                    <span class="radio-content">
+                                        <span class="radio-icon">🌆</span>
+                                        <span>Urban</span>
+                                    </span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="residence" value="Rural">
+                                    <span class="radio-content">
+                                        <span class="radio-icon">🌳</span>
+                                        <span>Rural</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="married">
+                                <span class="label-icon">💍</span>
+                                Marital Status
+                            </label>
+                            <div class="radio-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="married" value="yes" required>
+                                    <span class="radio-content">
+                                        <span class="radio-icon">💑</span>
+                                        <span>Married</span>
+                                    </span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="married" value="no">
+                                    <span class="radio-content">
+                                        <span class="radio-icon">👤</span>
+                                        <span>Not Married</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="workType">
+                                <span class="label-icon">💼</span>
+                                Work Type
+                            </label>
+                            <select id="workType" name="workType" required>
+                                <option value="">Select your work type</option>
+                                <option value="Private">Private Sector</option>
+                                <option value="Self-employed">Self-Employed</option>
+                                <option value="Govt_job">Government Job</option>
+                                <option value="children">Children/Student</option>
+                                <option value="Never_worked">Never Worked</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-next" onclick="nextStep(2)">
+                            Continue to Medical History
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Medical History -->
+                <div class="form-step" id="step2">
+                    <div class="step-header">
+                        <h2>🏥 Medical History</h2>
+                        <p>This information helps us understand your health background</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>
+                                <span class="label-icon">💓</span>
+                                Hypertension (High Blood Pressure)
+                            </label>
+                            <div class="toggle-group">
+                                <label class="toggle-card" data-tooltip="High blood pressure is a major risk factor">
+                                    <input type="checkbox" name="hypertension" id="hypertension">
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">
+                                        <span class="toggle-off">No</span>
+                                        <span class="toggle-on">Yes</span>
+                                    </span>
+                                </label>
+                            </div>
+                            <span class="input-hint">Blood pressure consistently above 140/90 mmHg</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <span class="label-icon">❤️</span>
+                                Heart Disease
+                            </label>
+                            <div class="toggle-group">
+                                <label class="toggle-card">
+                                    <input type="checkbox" name="heartDisease" id="heartDisease">
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">
+                                        <span class="toggle-off">No</span>
+                                        <span class="toggle-on">Yes</span>
+                                    </span>
+                                </label>
+                            </div>
+                            <span class="input-hint">Any diagnosed heart condition</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="glucose">
+                                <span class="label-icon">🩸</span>
+                                Average Glucose Level (mg/dL)
+                            </label>
+                            <input type="number" id="glucose" name="glucose" 
+                                   min="50" max="300" step="0.1"
+                                   placeholder="e.g., 100" required>
+                            <div class="range-indicator">
+                                <span class="range-label low">Normal: &lt;100</span>
+                                <span class="range-label medium">Pre-diabetic: 100-125</span>
+                                <span class="range-label high">High: &gt;126</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bmi">
+                                <span class="label-icon">⚖️</span>
+                                BMI (Body Mass Index)
+                            </label>
+                            <input type="number" id="bmi" name="bmi" 
+                                   min="10" max="60" step="0.1"
+                                   placeholder="e.g., 25" required>
+                            <div class="range-indicator">
+                                <span class="range-label low">Normal: 18.5-24.9</span>
+                                <span class="range-label medium">Overweight: 25-29.9</span>
+                                <span class="range-label high">Obese: ≥30</span>
+                            </div>
+                            <button type="button" class="bmi-calculator-btn" onclick="openBMICalculator()">
+                                📊 Calculate my BMI
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-back" onclick="prevStep(1)">
+                            <span class="btn-arrow">←</span>
+                            Back
+                        </button>
+                        <button type="button" class="btn btn-next" onclick="nextStep(3)">
+                            Continue to Lifestyle
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Lifestyle -->
+                <div class="form-step" id="step3">
+                    <div class="step-header">
+                        <h2>🌱 Lifestyle Information</h2>
+                        <p>Almost done! Tell us about your lifestyle habits</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>
+                                <span class="label-icon">🚬</span>
+                                Smoking Status
+                            </label>
+                            <div class="smoking-options">
+                                <label class="smoking-card">
+                                    <input type="radio" name="smoking" value="never smoked" required>
+                                    <span class="smoking-content">
+                                        <span class="smoking-icon">🚭</span>
+                                        <span class="smoking-title">Never Smoked</span>
+                                        <span class="smoking-desc">I have never smoked</span>
+                                    </span>
+                                </label>
+                                <label class="smoking-card">
+                                    <input type="radio" name="smoking" value="formerly smoked">
+                                    <span class="smoking-content">
+                                        <span class="smoking-icon">✅</span>
+                                        <span class="smoking-title">Former Smoker</span>
+                                        <span class="smoking-desc">I quit smoking</span>
+                                    </span>
+                                </label>
+                                <label class="smoking-card">
+                                    <input type="radio" name="smoking" value="smokes">
+                                    <span class="smoking-content">
+                                        <span class="smoking-icon">🚬</span>
+                                        <span class="smoking-title">Current Smoker</span>
+                                        <span class="smoking-desc">I currently smoke</span>
+                                    </span>
+                                </label>
+                                <label class="smoking-card">
+                                    <input type="radio" name="smoking" value="Unknown">
+                                    <span class="smoking-content">
+                                        <span class="smoking-icon">❓</span>
+                                        <span class="smoking-title">Unknown</span>
+                                        <span class="smoking-desc">Prefer not to say</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Preview -->
+                    <div class="summary-preview">
+                        <h3>📋 Your Information Summary</h3>
+                        <div class="summary-grid" id="summaryGrid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-back" onclick="prevStep(2)">
+                            <span class="btn-arrow">←</span>
+                            Back
+                        </button>
+                        <button type="submit" class="btn btn-submit">
+                            <span class="btn-icon">🔍</span>
+                            Get My Risk Assessment
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Results Section (Hidden initially) -->
+        <section class="results-section hidden" id="resultsSection">
+            <div class="results-container">
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState">
+                    <div class="loading-animation">
+                        <div class="heartbeat">
+                            <svg viewBox="0 0 100 100">
+                                <path class="heart-path" d="M50 88 L20 55 Q0 30 25 15 Q50 0 50 25 Q50 0 75 15 Q100 30 80 55 Z"/>
+                            </svg>
+                        </div>
+                        <div class="loading-text">
+                            <p>Analyzing your health data...</p>
+                            <p class="loading-subtext">Our AI is preparing personalized insights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Content -->
+                <div class="results-content hidden" id="resultsContent">
+                    <!-- Risk Gauge -->
+                    <div class="risk-gauge-container">
+                        <div class="risk-gauge">
+                            <svg viewBox="0 0 200 120" class="gauge-svg">
+                                <defs>
+                                    <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#22c55e"/>
+                                        <stop offset="50%" style="stop-color:#eab308"/>
+                                        <stop offset="100%" style="stop-color:#ef4444"/>
+                                    </linearGradient>
+                                </defs>
+                                <path class="gauge-bg" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#e5e7eb" stroke-width="12"/>
+                                <path class="gauge-fill" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGradient)" stroke-width="12" stroke-linecap="round"/>
+                                <circle class="gauge-needle" cx="100" cy="100" r="8" fill="#1f2937"/>
+                            </svg>
+                            <div class="gauge-value">
+                                <span class="gauge-percentage" id="riskPercentage">0</span>
+                                <span class="gauge-label">%</span>
+                            </div>
+                        </div>
+                        <div class="risk-level-badge" id="riskBadge">
+                            <span class="badge-text">LOW RISK</span>
+                        </div>
+                    </div>
+
+                    <!-- Risk Factors -->
+                    <div class="risk-factors-section">
+                        <h3>🔍 Key Risk Factors Identified</h3>
+                        <div class="risk-factors-list" id="riskFactorsList">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div class="ai-insights-section">
+                        <div class="ai-header">
+                            <span class="ai-icon">🤖</span>
+                            <h3>Personalized Health Insights</h3>
+                            <span class="ai-badge-small">AI-Powered</span>
+                        </div>
+                        <div class="ai-content" id="aiInsights">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="results-actions">
+                        <button class="btn btn-secondary" onclick="downloadReport()">
+                            📄 Download Report
+                        </button>
+                        <button class="btn btn-primary" onclick="startNewAssessment()">
+                            🔄 New Assessment
+                        </button>
+                    </div>
+                    
+                    <!-- Deploy Button -->
+                    <div class="results-actions" style="margin-top: 1rem;">
+                        <button class="btn btn-secondary" onclick="window.location.href='/deploy'" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);">
+                            🚀 Deploy to Streamlit
+                        </button>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div class="disclaimer">
+                        <p>⚠️ <strong>Important:</strong> This assessment is for informational purposes only and does not constitute medical advice. 
+                        Please consult a healthcare professional for proper diagnosis and treatment.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BMI Calculator Modal -->
+    <div class="modal hidden" id="bmiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📊 BMI Calculator</h3>
+                <button class="modal-close" onclick="closeBMICalculator()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="bmi-inputs">
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+                        <input type="number" id="heightCm" placeholder="e.g., 170">
+                    </div>
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="weightKg" placeholder="e.g., 70">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="calculateBMI()">Calculate</button>
+                <div class="bmi-result hidden" id="bmiResult">
+                    <p>Your BMI: <strong id="calculatedBMI">-</strong></p>
+                    <p class="bmi-category" id="bmiCategory"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Built with ❤️ for better health outcomes</p>
+        <p class="footer-small">StrokeCare AI © 2024 • Powered by Advanced Machine Learning</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

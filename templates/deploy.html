@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy to Streamlit - StrokeCare AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .deploy-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .deploy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .deploy-header h1 {
+            font-size: 2.5rem;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        .deploy-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .deploy-step h2 {
+            color: #6366f1;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .step-number {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .code-block {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .code-block code {
+            color: #10b981;
+        }
+        .code-block .comment {
+            color: #9ca3af;
+        }
+        .code-block .command {
+            color: #3b82f6;
+        }
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #eab308;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #22c55e;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #f3f4f6;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background: #e5e7eb;
+            transform: translateX(-5px);
+        }
+        .platform-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .platform-tab {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .platform-tab.active {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border-color: #6366f1;
+        }
+        .platform-tab:hover {
+            border-color: #6366f1;
+        }
+        .platform-content {
+            display: none;
+        }
+        .platform-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="deploy-container">
+        <a href="/" class="btn-back">
+            ← Back to Assessment
+        </a>
+        
+        <div class="deploy-header">
+            <h1>🚀 Deploy to Streamlit Cloud</h1>
+            <p>Follow these steps to deploy your StrokeCare AI application</p>
+        </div>
+
+        <!-- Platform Selection -->
+        <div class="platform-tabs">
+            <div class="platform-tab active" onclick="showPlatform('streamlit')">Streamlit Cloud</div>
+            <div class="platform-tab" onclick="showPlatform('heroku')">Heroku</div>
+            <div class="platform-tab" onclick="showPlatform('railway')">Railway</div>
+            <div class="platform-tab" onclick="showPlatform('docker')">Docker</div>
+        </div>
+
+        <!-- Streamlit Cloud -->
+        <div id="streamlit" class="platform-content active">
+            <div class="deploy-step">
+                <h2><span class="step-number">1</span>Prepare Your Repository</h2>
+                <p>First, make sure your code is on GitHub:</p>
+                <div class="code-block">
+<span class="comment"># Initialize git repository (if not already done)</span>
+<span class="command">git</span> init
+<span class="command">git</span> add .
+<span class="command">git</span> commit -m "Initial commit - StrokeCare AI"
+
+<span class="comment"># Create a new repository on GitHub, then:</span>
+<span class="command">git</span> remote add origin https://github.com/YOUR_USERNAME/stroke-prediction-app.git
+<span class="command">git</span> branch -M main
+<span class="command">git</span> push -u origin main
+                </div>
+                <div class="info-box">
+                    <strong>📝 Note:</strong> Make sure to include these files in your repository:
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>streamlit_app.py</code></li>
+                        <li><code>stroke_binary_model.pkl</code></li>
+                        <li><code>stroke_probability_model.pkl</code></li>
+                        <li><code>requirements.txt</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="deploy-step">
+                <h2><span class="step-number">2</span>Deploy on Streamlit Cloud</h2>
+                <ol style="line-height: 2;">
+                    <li>Go to <a href="https://share.streamlit.io" target="_blank">share.streamlit.io</a></li>
+                    <li>Sign in with your GitHub account</li>
+                    <li>Click <strong>"New app"</strong></li>
+                    <li>Select your repository: <code>YOUR_USERNAME/stroke-prediction-app</code></li>
+                    <li>Set the main file path: <code>streamlit_app.py</code></li>
+                    <li>Click <strong>"Deploy"</strong></li>
+                </ol>
+                <div class="success-box">
+                    <strong>✅ That's it!</strong> Your app will be live at:<br>
+                    <code>https://YOUR_APP_NAME.streamlit.app</code>
+                </div>
+            </div>
+
+            <div class="deploy-step">
+                <h2><span class="step-number">3</span>Verify Model Files</h2>
+                <p>Make sure your model files are in the repository root:</p>
+                <div class="code-block">
+stroke-prediction-app/
+├── streamlit_app.py
+├── stroke_binary_model.pkl      <span class="comment">← Must be present</span>
+├── stroke_probability_model.pkl <span class="comment">← Must be present</span>
+├── requirements.txt
+└── README.md
+                </div>
+                <div class="warning-box">
+                    <strong>⚠️ Important:</strong> Model files can be large. If GitHub rejects them (>100MB), 
+                    consider using Git LFS or storing models in cloud storage.
+                </div>
+            </div>
+
+            <div class="deploy-step">
+                <h2><span class="step-number">4</span>Test Your Deployment</h2>
+                <p>Once deployed, test your app:</p>
+                <ol style="line-height: 2;">
+                    <li>Open your Streamlit app URL</li>
+                    <li>Fill in the patient information form</li>
+                    <li>Click "Assess Stroke Risk"</li>
+                    <li>Verify results are displayed correctly</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Heroku -->
+        <div id="heroku" class="platform-content">
+            <div class="deploy-step">
+                <h2><span class="step-number">1</span>Install Heroku CLI</h2>
+                <p>Download and install from: <a href="https://devcenter.heroku.com/articles/heroku-cli" target="_blank">devcenter.heroku.com</a></p>
+            </div>
+
+            <div class="deploy-step">
+                <h2><span class="step-number">2</span>Create Procfile</h2>
+                <p>Create a file named <code>Procfile</code> (no extension) in your project root:</p>
+                <div class="code-block">
+web: gunicorn app:app
+                </div>
+            </div>
+
+            <div class="deploy-step">
+                <h2><span class="step-number">3</span>Deploy</h2>
+                <div class="code-block">
+<span class="command">heroku</span> login
+<span class="command">heroku</span> create your-app-name
+<span class="command">git</span> push heroku main
+                </div>
+            </div>
+        </div>
+
+        <!-- Railway -->
+        <div id="railway" class="platform-content">
+            <div class="deploy-step">
+                <h2><span class="step-number">1</span>Install Railway CLI</h2>
+                <div class="code-block">
+npm i -g @railway/cli
+                </div>
+            </div>
+
+            <div class="deploy-step">
+                <h2><span class="step-number">2</span>Deploy</h2>
+                <div class="code-block">
+<span class="command">railway</span> login
+<span class="command">railway</span> init
+<span class="command">railway</span> up
+                </div>
+            </div>
+        </div>
+
+        <!-- Docker -->
+        <div id="docker" class="platform-content">
+            <div class="deploy-step">
+                <h2><span class="step-number">1</span>Create Dockerfile</h2>
+                <p>Create a file named <code>Dockerfile</code>:</p>
+                <div class="code-block">
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 8501
+CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+                </div>
+            </div>
+
+            <div class="deploy-step">
+                <h2><span class="step-number">2</span>Build and Run</h2>
+                <div class="code-block">
+<span class="command">docker</span> build -t stroke-app .
+<span class="command">docker</span> run -p 8501:8501 stroke-app
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="deploy-step">
+            <h2>📚 Additional Resources</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://docs.streamlit.io/streamlit-community-cloud" target="_blank">Streamlit Cloud Documentation</a></li>
+                <li><a href="https://devcenter.heroku.com/articles/getting-started-with-python" target="_blank">Heroku Python Guide</a></li>
+                <li><a href="https://docs.railway.app" target="_blank">Railway Documentation</a></li>
+                <li><a href="DEPLOYMENT.md" target="_blank">Full Deployment Guide (DEPLOYMENT.md)</a></li>
+            </ul>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="deploy-step">
+            <h2>🔧 Troubleshooting</h2>
+            <div class="warning-box">
+                <strong>Models not loading?</strong><br>
+                - Verify model files are in the repository<br>
+                - Check file permissions<br>
+                - Ensure pickle version compatibility
+            </div>
+            <div class="warning-box">
+                <strong>Dependencies error?</strong><br>
+                - Check <code>requirements.txt</code> is up to date<br>
+                - Verify Python version compatibility<br>
+                - Review deployment logs
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPlatform(platform) {
+            // Hide all platforms
+            document.querySelectorAll('.platform-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.platform-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected platform
+            document.getElementById(platform).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+
