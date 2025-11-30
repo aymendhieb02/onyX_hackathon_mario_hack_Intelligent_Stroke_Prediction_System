@@ -8,6 +8,86 @@ import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 
 
+def complete_preprocessing(df, expected_features=None):
+    """
+    Complete preprocessing pipeline for stroke prediction models.
+    The model expects: age_30_45, age_45_60, age_55_plus, age_60_75, Residence_type_encoded, etc.
+    """
+    df = df.copy()
+    
+    # Step 1: Handle missing values
+    if 'bmi' in df.columns:
+        df['bmi'] = df['bmi'].fillna(df['bmi'].median() if len(df) > 0 else 25.0)
+    if 'avg_glucose_level' in df.columns:
+        df['avg_glucose_level'] = df['avg_glucose_level'].fillna(df['avg_glucose_level'].median() if len(df) > 0 else 100.0)
+    
+    # Step 2: Create age features (all possible age features)
+    if 'age' in df.columns:
+        df['age'] = df['age'].astype(float)
+        # Create all possible age features
+        df['age_30_45'] = ((df['age'] >= 30) & (df['age'] < 45)).astype(int)
+        df['age_45_60'] = ((df['age'] >= 45) & (df['age'] < 60)).astype(int)
+        df['age_60_75'] = ((df['age'] >= 60) & (df['age'] < 75)).astype(int)
+        df['age_55_plus'] = (df['age'] >= 55).astype(int)
+        df['age_75_plus'] = (df['age'] >= 75).astype(int)
+        df['age_65_plus'] = (df['age'] >= 65).astype(int)
+        df['age_80_plus'] = (df['age'] >= 80).astype(int)
+        
+        # Additional age features that might be in scaler
+        df['age_squared'] = df['age'] ** 2
+        df['age_cubed'] = df['age'] ** 3
+        df['age_log'] = np.log(df['age'] + 1)
+        df['age_bin_young'] = (df['age'] < 45).astype(int)
+        df['age_bin_middle'] = ((df['age'] >= 45) & (df['age'] < 65)).astype(int)
+        df['age_bin_elderly'] = (df['age'] >= 65).astype(int)
+        
+        # Age interactions
+        if 'hypertension' in df.columns:
+            df['age_hypertension_interaction'] = df['age'] * df['hypertension']
+        if 'heart_disease' in df.columns:
+            df['age_heart_disease_interaction'] = df['age'] * df['heart_disease']
+        if 'avg_glucose_level' in df.columns:
+            df['age_glucose_interaction'] = df['age'] * df['avg_glucose_level'] / 100
+        
+        # Age dominated risk
+        df['age_dominated_risk'] = (
+            (df['age'] >= 65) * 3 +
+            (df['age'] >= 55) * 2 +
+            (df['age'] >= 45) * 1 +
+            (df['hypertension'] if 'hypertension' in df.columns else 0) * 1 +
+            (df['heart_disease'] if 'heart_disease' in df.columns else 0) * 2
+        )
+    
+    # Step 3: Encode ALL categorical variables with _encoded suffix
+    categorical_cols = ['gender', 'ever_married', 'work_type', 'Residence_type', 'smoking_status']
+    for col in categorical_cols:
+        if col in df.columns:
+            # Use Categorical codes for encoding (creates _encoded columns)
+            df[col + '_encoded'] = pd.Categorical(df[col]).codes
+    
+    # Step 4: Remove original categorical columns (keep only _encoded versions)
+    for col in categorical_cols:
+        if col in df.columns:
+            df = df.drop(columns=[col], errors='ignore')
+    
+    # Step 5: If we have expected_features, use them to filter
+    if expected_features is not None:
+        # Add missing expected features with 0
+        for col in expected_features:
+            if col not in df.columns:
+                df[col] = 0
+        
+        # Select ONLY the expected features in the correct order
+        df = df[expected_features]
+    else:
+        # If we don't know expected features, keep all created features
+        # Remove any remaining non-numeric columns that aren't encoded
+        numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+        df = df[numeric_cols]
+    
+    return df
+
+
 class StrokeBinaryPredictor(BaseEstimator, ClassifierMixin):
     """
     Wrapper class for binary predictions (0 or 1)
